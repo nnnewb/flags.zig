@@ -12,7 +12,7 @@ pub const FlagParseError = error{
 
 pub fn Flag(comptime T: type) type {
     comptime switch (@typeInfo(T)) {
-        .Int, .Float, .Bool, @typeInfo([*]const u8) => {},
+        .int, .float, .bool, @typeInfo([*]const u8) => {},
         else => @compileError("unsupported type"),
     };
 
@@ -41,7 +41,7 @@ pub fn Flag(comptime T: type) type {
 
         pub fn parse(self: *Self, value: []const u8) !void {
             switch (@typeInfo(T)) {
-                .Bool => {
+                .bool => {
                     if (mem.eql(u8, value, "true")) {
                         self.target.* = true;
                     } else if (mem.eql(u8, value, "false")) {
@@ -50,17 +50,17 @@ pub fn Flag(comptime T: type) type {
                         return error.InvalidBool;
                     }
                 },
-                .Int => {
+                .int => {
                     self.target.* = std.fmt.parseInt(T, value, 10) catch {
                         return error.InvalidInt;
                     };
                 },
-                .Float => {
+                .float => {
                     self.target.* = std.fmt.parseFloat(T, value) catch {
                         return error.InvalidFloat;
                     };
                 },
-                .Pointer => {
+                .pointer => {
                     self.target.* = value;
                 },
                 else => {
